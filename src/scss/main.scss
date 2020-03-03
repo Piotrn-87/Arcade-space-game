@@ -12,9 +12,14 @@ html {
 }
 
 body {
-  color: $green;
-  background: $violet;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin: 0;
+  padding: 0;
+  color: $violet;
+  background: $green;
+  // display: grid;
+  // justify-items: center;
+  // align-items: center;
+  // padding: 2rem;
+  // margin: auto;
+  height: 100vh;
 }
