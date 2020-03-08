@@ -16,10 +16,21 @@ body {
   padding: 0;
   color: $violet;
   background: $green;
-  // display: grid;
-  // justify-items: center;
-  // align-items: center;
-  // padding: 2rem;
-  // margin: auto;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  padding: 2rem;
+  margin: auto;
   height: 100vh;
+  // animation: animate 20s linear infinite;
+}
+
+@keyframes animate {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+
+  100% {
+    filter: hue-rotate(360deg);
+  }
 }

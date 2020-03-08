@@ -18,24 +18,59 @@ if ("serviceWorker" in navigator) {
 
 console.log(`it works`);
 
-let canvas = document.getElementById("canvas");
+let canvas = document.getElementById("gameCanvas");
 let ctx = canvas.getContext("2d");
 const fps = 30;
 const shipSize = 30;
+const turnSpeed = 360;
 
 let ship = {
   x: canvas.width / 2,
   y: canvas.height / 2,
   r: shipSize / 2,
-  a: (90 / 180) * Math.PI
+  a: (90 / 180) * Math.PI,
+  rotate: 0
 };
 
-setInterval(update(), 1000 / fps);
+document.addEventListener("keydown", keyDown);
+document.addEventListener("keyup", keyUp);
+
+setInterval(update, 1000 / fps);
+
+function keyDown(e) {
+  switch (e.keyCode) {
+    case 37:
+      ship.rotate = ((turnSpeed / 180) * Math.PI) / fps;
+      console.log("Left", ship.rotate);
+      break;
+    case 39:
+      ship.rotate = ((-turnSpeed / 180) * Math.PI) / fps;
+      console.log("Right", ship.rotate);
+      break;
+    default:
+      break;
+  }
+}
+
+function keyUp(e) {
+  switch (e.keyCode) {
+    case 37:
+      ship.rotate = 0;
+      console.log("Left");
+      break;
+    case 39:
+      ship.rotate = 0;
+      console.log("Right");
+      break;
+    default:
+      break;
+  }
+}
 
 function update() {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.strokeStyle = "white";
+  ctx.strokeStyle = "green";
   ctx.lineWidth = shipSize / 10;
   ctx.beginPath();
   ctx.moveTo(
@@ -53,5 +88,5 @@ function update() {
   ctx.closePath();
   ctx.stroke();
 
-  (ctx.fillStyle = "coral"), ctx.fillRect(ship.x - 1, ship.y - 1, 2, 2);
+  ship.a += ship.rotate;
 }
