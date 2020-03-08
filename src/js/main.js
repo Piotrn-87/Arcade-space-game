@@ -24,6 +24,7 @@ const fps = 30;
 const shipSize = 30;
 const turnSpeed = 360;
 const shipForward = 5;
+const motion = 0.7;
 
 let ship = {
   x: canvas.width / 2,
@@ -37,6 +38,9 @@ let ship = {
     y: 0
   }
 };
+let xx = ship.a;
+
+console.log("cos a", Math.cos((90 / 180) * Math.PI));
 
 document.addEventListener("keydown", keyDown);
 document.addEventListener("keyup", keyUp);
@@ -79,11 +83,14 @@ function update() {
   if (ship.moveForward) {
     ship.forward.x += (shipForward * Math.cos(ship.a)) / fps;
     ship.forward.y -= (shipForward * Math.sin(ship.a)) / fps;
+  } else {
+    ship.forward.x -= (motion * ship.forward.x) / fps;
+    ship.forward.y -= (motion * ship.forward.y) / fps;
   }
 
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.strokeStyle = "green";
+  ctx.strokeStyle = "#fff";
   ctx.lineWidth = shipSize / 15;
   ctx.beginPath();
   ctx.moveTo(
@@ -105,4 +112,15 @@ function update() {
 
   ship.x += ship.forward.x;
   ship.y += ship.forward.y;
+
+  if (ship.x < 0 - ship.r) {
+    ship.x = canvas.width + ship.r;
+  } else if (ship.x > canvas.width + ship.r) {
+    ship.x = 0 - ship.r;
+  }
+  if (ship.y < 0 - ship.r) {
+    ship.y = canvas.height + ship.r;
+  } else if (ship.y > canvas.height + ship.r) {
+    ship.y = 0 - ship.r;
+  }
 }
