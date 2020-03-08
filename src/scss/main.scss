@@ -14,7 +14,7 @@ html {
 body {
   margin: 0;
   padding: 0;
-  color: $violet;
+  // color: $violet;
   background: $green;
   display: grid;
   justify-items: center;
@@ -22,7 +22,7 @@ body {
   padding: 2rem;
   margin: auto;
   height: 100vh;
-  // animation: animate 20s linear infinite;
+  animation: animate 20s linear infinite;
 }
 
 @keyframes animate {

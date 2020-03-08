@@ -80,16 +80,41 @@ function keyUp(e) {
 }
 
 function update() {
+  // Draw Space
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Move Forward Space
   if (ship.moveForward) {
     ship.forward.x += (shipForward * Math.cos(ship.a)) / fps;
     ship.forward.y -= (shipForward * Math.sin(ship.a)) / fps;
+
+    // Draw Turbo Buster
+    ctx.fillStyle = "red";
+    ctx.strokeStyle = "yellow";
+    ctx.lineWidth = shipSize / 15;
+    ctx.beginPath();
+    ctx.moveTo(
+      ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) + 0.5 * Math.sin(ship.a)),
+      ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) - 0.5 * Math.cos(ship.a))
+    );
+    ctx.lineTo(
+      ship.x - ((ship.r * 5) / 3) * Math.cos(ship.a),
+      ship.y + ((ship.r * 5) / 3) * Math.sin(ship.a)
+    );
+    ctx.lineTo(
+      ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) - 0.5 * Math.sin(ship.a)),
+      ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) + 0.5 * Math.cos(ship.a))
+    );
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
   } else {
     ship.forward.x -= (motion * ship.forward.x) / fps;
     ship.forward.y -= (motion * ship.forward.y) / fps;
   }
 
-  ctx.fillStyle = "black";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // Draw the ship
   ctx.strokeStyle = "#fff";
   ctx.lineWidth = shipSize / 15;
   ctx.beginPath();
@@ -108,11 +133,13 @@ function update() {
   ctx.closePath();
   ctx.stroke();
 
+  // Rotate Ship
   ship.a += ship.rotate;
-
+  // Motio Ship
   ship.x += ship.forward.x;
   ship.y += ship.forward.y;
 
+  // Edge of screen
   if (ship.x < 0 - ship.r) {
     ship.x = canvas.width + ship.r;
   } else if (ship.x > canvas.width + ship.r) {
