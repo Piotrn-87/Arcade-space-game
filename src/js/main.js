@@ -20,6 +20,8 @@ console.log(`it works`);
 
 let canvas = document.getElementById("gameCanvas");
 let ctx = canvas.getContext("2d");
+let hue = 0;
+
 const fps = 30;
 const shipSize = 30;
 const turnSpeed = 360;
@@ -48,6 +50,8 @@ document.addEventListener("keyup", keyUp);
 setInterval(update, 30);
 
 function keyDown(e) {
+  hue = hue + 10;
+  console.log("hue", hue);
   switch (e.keyCode) {
     case 37:
       ship.rotate = ((turnSpeed / 180) * Math.PI) / fps;
@@ -90,21 +94,22 @@ function update() {
     ship.forward.y -= (shipForward * Math.sin(ship.a)) / fps;
 
     // Draw Turbo Buster
-    ctx.fillStyle = "red";
+    // ctx.fillStyle = "red";
+    ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
     ctx.strokeStyle = "yellow";
     ctx.lineWidth = shipSize / 15;
     ctx.beginPath();
     ctx.moveTo(
-      ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) + 0.5 * Math.sin(ship.a)),
-      ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) - 0.5 * Math.cos(ship.a))
+      ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) + 0.7 * Math.sin(ship.a)),
+      ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) - 0.7 * Math.cos(ship.a))
     );
     ctx.lineTo(
-      ship.x - ((ship.r * 5) / 3) * Math.cos(ship.a),
-      ship.y + ((ship.r * 5) / 3) * Math.sin(ship.a)
+      ship.x - ((ship.r * 6) / 3) * Math.cos(ship.a),
+      ship.y + ((ship.r * 6) / 3) * Math.sin(ship.a)
     );
     ctx.lineTo(
-      ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) - 0.5 * Math.sin(ship.a)),
-      ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) + 0.5 * Math.cos(ship.a))
+      ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) - 0.7 * Math.sin(ship.a)),
+      ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) + 0.7 * Math.cos(ship.a))
     );
     ctx.closePath();
     ctx.fill();
