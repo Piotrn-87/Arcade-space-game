@@ -320,8 +320,31 @@ html {
 body {
   margin: 0;
   padding: 0;
-  color: #000;
   background: #bada55;
+  display: -ms-grid;
+  display: grid;
+  justify-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 2rem;
+  margin: auto;
   height: 100vh; }
+
+@-webkit-keyframes animate {
+  0% {
+    -webkit-filter: hue-rotate(0deg);
+            filter: hue-rotate(0deg); }
+  100% {
+    -webkit-filter: hue-rotate(360deg);
+            filter: hue-rotate(360deg); } }
+
+@keyframes animate {
+  0% {
+    -webkit-filter: hue-rotate(0deg);
+            filter: hue-rotate(0deg); }
+  100% {
+    -webkit-filter: hue-rotate(360deg);
+            filter: hue-rotate(360deg); } }
 
 /*# sourceMappingURL=main.css.map */
