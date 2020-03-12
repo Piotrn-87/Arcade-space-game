@@ -27,6 +27,10 @@ const shipSize = 30;
 const turnSpeed = 360;
 const shipForward = 5;
 const motion = 0.7;
+const asteriodNum = 3;
+const asteriodSize = 100;
+const asteriodSpeed = 50;
+const asteriodsVert = 10;
 
 let ship = {
   x: canvas.width / 2,
@@ -40,18 +44,42 @@ let ship = {
     y: 0
   }
 };
-let xx = ship.a;
 
-console.log("cos a", Math.cos((90 / 180) * Math.PI));
+let asteriods = [];
+createAsteroids();
 
+setInterval(update, 30);
 document.addEventListener("keydown", keyDown);
 document.addEventListener("keyup", keyUp);
 
-setInterval(update, 30);
+function createAsteroids() {
+  console.log("roids");
+  asteriods = [];
+  let x, y;
+  for (let i = 0; i < asteriodNum; i++) {
+    x = Math.floor(Math.random() * canvas.width);
+    y = Math.floor(Math.random() * canvas.height);
+    asteriods.push(newAsterodid(x, y));
+  }
+}
+
+function newAsterodid(x, y) {
+  let asteriod = {
+    x: x,
+    y: y,
+    xv:
+      ((Math.random() * asteriodSpeed) / fps) * (Math.random() < 0.5 ? 1 : -1),
+    yv:
+      ((Math.random() * asteriodSpeed) / fps) * (Math.random() < 0.5 ? 1 : -1),
+    r: asteriodSize / 2,
+    a: Math.random() * Math.PI * 2,
+    vertical: Math.floor(Math.random() * asteriodsVert + 1 + asteriodsVert / 2)
+  };
+  return asteriods;
+}
 
 function keyDown(e) {
   hue = hue + 10;
-  console.log("hue", hue);
   switch (e.keyCode) {
     case 37:
       ship.rotate = ((turnSpeed / 180) * Math.PI) / fps;
@@ -94,7 +122,6 @@ function update() {
     ship.forward.y -= (shipForward * Math.sin(ship.a)) / fps;
 
     // Draw Turbo Buster
-    // ctx.fillStyle = "red";
     ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
     ctx.strokeStyle = "yellow";
     ctx.lineWidth = shipSize / 15;
@@ -138,9 +165,33 @@ function update() {
   ctx.closePath();
   ctx.stroke();
 
+  //Draw asteriods
+  ctx.strokeStyle = "slategrey";
+  ctx.lineWidth = shipSize / 15;
+  let x, y, r, a, vert;
+
+  for (let i = 0; i < asteriods.length; i++) {
+    x = asteriods[i].x;
+    y = asteriods[i].y;
+    a = asteriods[i].a;
+    r = asteriods[i].r;
+    vert = asteriods[i].vert;
+    ctx.beginPath();
+    ctx.moveTo(x + r * Math.cos(a), y + r * Math.sin(a));
+    for (let j = 0; j < vert; j++) {
+      ctx.lineTo(
+        x + r * Math.cos(a + (j * Math.PI * 2) / vert),
+        y + r * Math.sin(a + (j * Math.PI * 2) / vert)
+      );
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+
   // Rotate Ship
-  ship.a += ship.rotate;
-  // Motio Ship
+  ship.a = ship.a + ship.rotate;
+
+  // Motion Ship
   ship.x += ship.forward.x;
   ship.y += ship.forward.y;
 
