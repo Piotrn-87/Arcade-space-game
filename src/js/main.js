@@ -61,22 +61,18 @@ function createAsteroids() {
     asteroids.push(newAsteroid(x, y));
   }
 }
-
 function newAsteroid(x, y) {
   let asteroids = {
     x: x,
     y: y,
-    vertically: Math.floor(
-      Math.random() * (asteroidVert + 1) + asteroidVert / 2
-    ),
+    vertically: Math.floor(Math.random() * asteroidVert * 2),
     // xv:
     //   ((Math.random() * asteroidSpeed) / fps) * (Math.random() < 0.5 ? 1 : -1),
     // yv:
     //   ((Math.random() * asteroidSpeed) / fps) * (Math.random() < 0.5 ? 1 : -1),
-    r: asteroidSize / 5,
+    r: Math.floor((Math.random() * asteroidSize) / 2),
     a: Math.random() * Math.PI * 2
   };
-
   return asteroids;
 }
 
@@ -168,21 +164,22 @@ function update() {
   }
 
   // Draw asteriods
-  ctx.strokeStyle = "slategrey";
+
+  ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
   ctx.lineWidth = shipSize / 20;
-  let x, y, r, a, vertically;
+  let x, y, r, a, vert;
   for (let i = 0; i < asteroids.length; i++) {
     x = asteroids[i].x;
     y = asteroids[i].y;
     a = asteroids[i].a;
     r = asteroids[i].r;
-    vertically = asteroids[i].vertically;
+    vert = asteroids[i].vertically;
     ctx.beginPath();
     ctx.moveTo(x + r * Math.cos(a), y + r * Math.sin(a));
-    for (let j = 1; j < vertically; j++) {
+    for (let j = 1; j < vert; j++) {
       ctx.lineTo(
-        x + r * Math.cos(a + (j * Math.PI * 2) / vertically),
-        y + r * Math.sin(a + (j * Math.PI * 2) / vertically)
+        x + r * Math.cos(a + (j * Math.PI * 2) / vert),
+        y + r * Math.sin(a + (j * Math.PI * 2) / vert)
       );
     }
     ctx.closePath();
