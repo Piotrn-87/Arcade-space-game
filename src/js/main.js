@@ -23,7 +23,7 @@ const shipSize = 30;
 const turnSpeed = 360;
 const shipForward = 5;
 const motion = 0.7;
-const asteroidNum = 3;
+const asteroidNumber = 5;
 const asteroidSize = 100;
 const asteroidSpeed = 50;
 const asteroidVert = 10;
@@ -49,13 +49,13 @@ let ship = {
 createAsteroids();
 
 setInterval(update, 30);
+
 document.addEventListener("keydown", keyDown);
 document.addEventListener("keyup", keyUp);
 
 function createAsteroids() {
-  asteroids = [];
   let x, y;
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < asteroidNumber; i++) {
     x = Math.floor(Math.random() * canvas.width);
     y = Math.floor(Math.random() * canvas.height);
     asteroids.push(newAsteroid(x, y));
@@ -66,15 +66,17 @@ function newAsteroid(x, y) {
   let asteroids = {
     x: x,
     y: y,
-    vert: Math.floor(Math.random() * (asteroidVert + 1) + asteroidVert / 2),
-    xv:
-      ((Math.random() * asteroidSpeed) / fps) * (Math.random() < 0.5 ? 1 : -1),
-    yv:
-      ((Math.random() * asteroidSpeed) / fps) * (Math.random() < 0.5 ? 1 : -1),
-    r: asteroidSize / 2,
-    a: Math.random() * Math.PI * 2,
-    vertical: Math.floor(Math.random() * asteroidVert + 1 + asteroidVert / 2)
+    vertically: Math.floor(
+      Math.random() * (asteroidVert + 1) + asteroidVert / 2
+    ),
+    // xv:
+    //   ((Math.random() * asteroidSpeed) / fps) * (Math.random() < 0.5 ? 1 : -1),
+    // yv:
+    //   ((Math.random() * asteroidSpeed) / fps) * (Math.random() < 0.5 ? 1 : -1),
+    r: asteroidSize / 5,
+    a: Math.random() * Math.PI * 2
   };
+
   return asteroids;
 }
 
@@ -168,19 +170,19 @@ function update() {
   // Draw asteriods
   ctx.strokeStyle = "slategrey";
   ctx.lineWidth = shipSize / 20;
-  let x, y, r, a, vert;
+  let x, y, r, a, vertically;
   for (let i = 0; i < asteroids.length; i++) {
     x = asteroids[i].x;
     y = asteroids[i].y;
     a = asteroids[i].a;
     r = asteroids[i].r;
-    vert = asteroids[i].vert;
+    vertically = asteroids[i].vertically;
     ctx.beginPath();
     ctx.moveTo(x + r * Math.cos(a), y + r * Math.sin(a));
-    for (let j = 1; j < vert; j++) {
+    for (let j = 1; j < vertically; j++) {
       ctx.lineTo(
-        x + r * Math.cos(a + (j * Math.PI * 2) / vert),
-        y + r * Math.sin(a + (j * Math.PI * 2) / vert)
+        x + r * Math.cos(a + (j * Math.PI * 2) / vertically),
+        y + r * Math.sin(a + (j * Math.PI * 2) / vertically)
       );
     }
     ctx.closePath();
