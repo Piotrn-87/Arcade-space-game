@@ -18,19 +18,20 @@ if ("serviceWorker" in navigator) {
 
 console.log(`it works`);
 
-let canvas = document.getElementById("gameCanvas");
-let ctx = canvas.getContext("2d");
-let hue = 0;
-
 const fps = 30;
 const shipSize = 30;
 const turnSpeed = 360;
 const shipForward = 5;
 const motion = 0.7;
-const asteriodNum = 3;
-const asteriodSize = 100;
-const asteriodSpeed = 50;
-const asteriodsVert = 10;
+const asteroidNum = 3;
+const asteroidSize = 100;
+const asteroidSpeed = 50;
+const asteroidVert = 10;
+
+let canvas = document.getElementById("gameCanvas");
+let ctx = canvas.getContext("2d");
+let hue = 0;
+let asteroids = [];
 
 let ship = {
   x: canvas.width / 2,
@@ -45,7 +46,6 @@ let ship = {
   }
 };
 
-let asteriods = [];
 createAsteroids();
 
 setInterval(update, 30);
@@ -53,29 +53,29 @@ document.addEventListener("keydown", keyDown);
 document.addEventListener("keyup", keyUp);
 
 function createAsteroids() {
-  console.log("roids");
-  asteriods = [];
+  asteroids = [];
   let x, y;
-  for (let i = 0; i < asteriodNum; i++) {
+  for (let i = 0; i < 3; i++) {
     x = Math.floor(Math.random() * canvas.width);
     y = Math.floor(Math.random() * canvas.height);
-    asteriods.push(newAsterodid(x, y));
+    asteroids.push(newAsteroid(x, y));
   }
 }
 
-function newAsterodid(x, y) {
-  let asteriod = {
+function newAsteroid(x, y) {
+  let asteroids = {
     x: x,
     y: y,
+    vert: Math.floor(Math.random() * (asteroidVert + 1) + asteroidVert / 2),
     xv:
-      ((Math.random() * asteriodSpeed) / fps) * (Math.random() < 0.5 ? 1 : -1),
+      ((Math.random() * asteroidSpeed) / fps) * (Math.random() < 0.5 ? 1 : -1),
     yv:
-      ((Math.random() * asteriodSpeed) / fps) * (Math.random() < 0.5 ? 1 : -1),
-    r: asteriodSize / 2,
+      ((Math.random() * asteroidSpeed) / fps) * (Math.random() < 0.5 ? 1 : -1),
+    r: asteroidSize / 2,
     a: Math.random() * Math.PI * 2,
-    vertical: Math.floor(Math.random() * asteriodsVert + 1 + asteriodsVert / 2)
+    vertical: Math.floor(Math.random() * asteroidVert + 1 + asteroidVert / 2)
   };
-  return asteriods;
+  return asteroids;
 }
 
 function keyDown(e) {
@@ -116,6 +116,25 @@ function update() {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+  // Draw the ship
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = shipSize / 15;
+  ctx.beginPath();
+  ctx.moveTo(
+    ship.x + (4 / 3) * ship.r * Math.cos(ship.a),
+    ship.y - (4 / 3) * ship.r * Math.sin(ship.a)
+  );
+  ctx.lineTo(
+    ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) + Math.sin(ship.a)),
+    ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) - Math.cos(ship.a))
+  );
+  ctx.lineTo(
+    ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) - Math.sin(ship.a)),
+    ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) + Math.cos(ship.a))
+  );
+  ctx.closePath();
+  ctx.stroke();
+
   // Move Forward Space
   if (ship.moveForward) {
     ship.forward.x += (shipForward * Math.cos(ship.a)) / fps;
@@ -146,39 +165,19 @@ function update() {
     ship.forward.y -= (motion * ship.forward.y) / fps;
   }
 
-  // Draw the ship
-  ctx.strokeStyle = "#fff";
-  ctx.lineWidth = shipSize / 15;
-  ctx.beginPath();
-  ctx.moveTo(
-    ship.x + (4 / 3) * ship.r * Math.cos(ship.a),
-    ship.y - (4 / 3) * ship.r * Math.sin(ship.a)
-  );
-  ctx.lineTo(
-    ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) + Math.sin(ship.a)),
-    ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) - Math.cos(ship.a))
-  );
-  ctx.lineTo(
-    ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) - Math.sin(ship.a)),
-    ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) + Math.cos(ship.a))
-  );
-  ctx.closePath();
-  ctx.stroke();
-
-  //Draw asteriods
+  // Draw asteriods
   ctx.strokeStyle = "slategrey";
-  ctx.lineWidth = shipSize / 15;
+  ctx.lineWidth = shipSize / 20;
   let x, y, r, a, vert;
-
-  for (let i = 0; i < asteriods.length; i++) {
-    x = asteriods[i].x;
-    y = asteriods[i].y;
-    a = asteriods[i].a;
-    r = asteriods[i].r;
-    vert = asteriods[i].vert;
+  for (let i = 0; i < asteroids.length; i++) {
+    x = asteroids[i].x;
+    y = asteroids[i].y;
+    a = asteroids[i].a;
+    r = asteroids[i].r;
+    vert = asteroids[i].vert;
     ctx.beginPath();
     ctx.moveTo(x + r * Math.cos(a), y + r * Math.sin(a));
-    for (let j = 0; j < vert; j++) {
+    for (let j = 1; j < vert; j++) {
       ctx.lineTo(
         x + r * Math.cos(a + (j * Math.PI * 2) / vert),
         y + r * Math.sin(a + (j * Math.PI * 2) / vert)
