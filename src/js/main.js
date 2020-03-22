@@ -20,47 +20,45 @@ console.log(`it works`);
 
 const fps = 30;
 const shipSize = 30;
-const turnSpeed = 360;
+const turnSpeed = 270;
 const shipForward = 5;
-const motion = 0.7;
-const asteroidNumber = 10;
+const asteroidNumber = 40;
 const asteroidSize = 100;
 const asteroidSpeed = 50;
 const asteroidVert = 10;
 const asteroidJaggedness = 0.5;
 
 let pause = false;
-let time;
 let canvas = document.getElementById("gameCanvas");
 let ctx = canvas.getContext("2d");
 let hue = 0;
 let asteroids = [];
 
 let ship = {
-  x: canvas.width / 2,
-  y: canvas.height / 2,
+  x: Math.floor(Math.random() * canvas.width),
+  y: Math.floor(Math.random() * canvas.height),
+  retu: Math.floor(Math.random() * -1 * canvas.height),
   r: shipSize / 2,
-  a: (90 / 180) * Math.PI,
+  a: Math.PI / 2,
   rotate: 0,
   moveForward: false,
+  moveReturn: false,
+  motion: 0.7,
   forward: {
     x: 0,
     y: 0
   }
 };
 
-createAsteroids();
-
-function start() {
-  time = window.setInterval(() => {
+function START() {
+  window.setInterval(() => {
     if (!pause) {
-      update();
+      UPDATE();
     }
   }, 30);
 }
-start();
-
-// setInterval(update, 30);
+START();
+// createAsteroids();
 
 document.addEventListener("keydown", keyDown);
 document.addEventListener("keyup", keyUp);
@@ -81,15 +79,11 @@ function newAsteroid(x, y) {
   let asteroid = {
     x: x,
     y: y,
-    vertically: Math.floor(
-      Math.random() * (asteroidVert + 1) + asteroidVert / 2
-    ),
-    xv:
-      ((Math.random() * asteroidSpeed) / fps) * (Math.random() < 0.5 ? 1 : -1),
-    yv:
-      ((Math.random() * asteroidSpeed) / fps) * (Math.random() < 0.5 ? 1 : -1),
-    r: Math.floor((Math.random() * asteroidSize) / 2),
-    a: Math.random() * Math.PI * 2,
+    vertically: Math.random() * 10 + asteroidVert / 2,
+    xv: (Math.random() * asteroidSpeed) / fps < 0.5 ? 1 : -1,
+    yv: (Math.random() * asteroidSpeed) / fps < 0.5 ? 1 : -1,
+    r: Math.floor((Math.random() * asteroidSize) / 4),
+    a: Math.PI * 2,
     jaggedness: []
   };
 
@@ -98,7 +92,6 @@ function newAsteroid(x, y) {
       Math.random() * asteroidJaggedness * 2 + 1 - asteroidJaggedness
     );
   }
-
   return asteroid;
 }
 
@@ -121,6 +114,9 @@ function keyDown(e) {
     case 39:
       ship.rotate = ((-turnSpeed / 180) * Math.PI) / fps;
       break;
+    case 40:
+      ship.moveReturn = true;
+      break;
     case 80:
       pause = !pause;
       break;
@@ -140,12 +136,15 @@ function keyUp(e) {
     case 39:
       ship.rotate = 0;
       break;
+    case 40:
+      ship.moveReturn = false;
+      break;
     default:
       break;
   }
 }
 
-function update() {
+function UPDATE() {
   // Draw Space
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -173,7 +172,7 @@ function update() {
   // Move forward in space
   if (ship.moveForward) {
     ship.forward.x += (shipForward * Math.cos(ship.a)) / 10;
-    ship.forward.y -= (shipForward * Math.sin(ship.a)) / 10;
+    ship.forward.y += (shipForward * Math.sin(ship.a)) / 10;
 
     // Draw Turbo Buster
     ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
@@ -195,9 +194,33 @@ function update() {
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
+  } else if (ship.moveReturn) {
+    ship.forward.y -= (shipForward * Math.sin(ship.a)) / 20;
+    ship.forward.x -= (shipForward * Math.cos(ship.a)) / 20;
+
+    // Draw buster in return
+    ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+    ctx.strokeStyle = "yellow";
+    ctx.lineWidth = shipSize / 15;
+    ctx.beginPath();
+    ctx.moveTo(
+      ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) + 0.7 * Math.sin(ship.a)),
+      ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) - 0.7 * Math.cos(ship.a))
+    );
+    ctx.lineTo(
+      ship.x - ship.r * Math.cos(ship.a),
+      ship.y + ship.r * Math.sin(ship.a)
+    );
+    ctx.lineTo(
+      ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) - 0.7 * Math.sin(ship.a)),
+      ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) + 0.7 * Math.cos(ship.a))
+    );
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
   } else {
-    ship.forward.x -= (motion * ship.forward.x) / 10;
-    ship.forward.y -= (motion * ship.forward.y) / 10;
+    ship.forward.x -= (ship.motion * ship.forward.x) / 5;
+    ship.forward.y -= (ship.motion * ship.forward.y) / 5;
   }
 
   // Draw asteriods
@@ -224,8 +247,8 @@ function update() {
     }
 
     // Move the asteroids
-    asteroids[i].x = asteroids[i].x + asteroids[i].xv;
-    asteroids[i].y = asteroids[i].y + asteroids[i].yv;
+    asteroids[i].x = asteroids[i].x + asteroids[i].xv / 2;
+    asteroids[i].y = asteroids[i].y + asteroids[i].yv * 2;
 
     // Edge of screen asteroids
     if (asteroids[i].x < 0 - asteroids[i].r) {
@@ -235,7 +258,7 @@ function update() {
     }
     if (asteroids[i].y < 0 - asteroids[i].r) {
       asteroids[i].y = canvas.height + asteroids[i].r;
-    } else if (asteroids[i].x > canvas.height + asteroids[i].r) {
+    } else if (asteroids[i].y > canvas.height + asteroids[i].r) {
       asteroids[i].y = 0 - asteroids[i].r;
     }
 
@@ -248,7 +271,7 @@ function update() {
 
   // Motion Ship
   ship.x = ship.x + ship.forward.x;
-  ship.y = ship.y + ship.forward.y;
+  ship.y = ship.y - ship.forward.y;
 
   // Edge of screen
   if (ship.x < 0 - ship.r) {
