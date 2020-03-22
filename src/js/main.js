@@ -35,22 +35,7 @@ let ctx = canvas.getContext("2d");
 let hue = 0;
 let asteroids = [];
 let bounding = false;
-let ship = {
-  x: Math.floor(Math.random() * canvas.width),
-  y: Math.floor(Math.random() * canvas.height),
-  retu: Math.floor(Math.random() * -1 * canvas.height),
-  r: shipSize / 2,
-  a: Math.PI / 2,
-  rotate: 0,
-  moveForward: false,
-  moveReturn: false,
-  motion: 0.7,
-  expoldeTime: 0,
-  forward: {
-    x: 0,
-    y: 0
-  }
-};
+let ship = newShip();
 
 function START() {
   window.setInterval(() => {
@@ -118,6 +103,24 @@ function createAsteroids() {
     asteroids.push(newAsteroid(x, y));
   }
 }
+function newShip() {
+  return {
+    x: Math.floor(Math.random() * canvas.width),
+    y: Math.floor(Math.random() * canvas.height),
+    retu: Math.floor(Math.random() * -1 * canvas.height),
+    r: shipSize / 2,
+    a: Math.PI / 2,
+    rotate: 0,
+    moveForward: false,
+    moveReturn: false,
+    motion: 0.7,
+    exploadingTime: 0,
+    forward: {
+      x: 0,
+      y: 0
+    }
+  };
+}
 
 function newAsteroid(x, y) {
   let asteroid = {
@@ -146,11 +149,11 @@ function safetyBuffer(x1, y1, x2, y2) {
 }
 
 function explodeShip() {
-  ship.expoldeTime = Math.floor(shipExplodeDuration * fps);
+  ship.exploadingTime = Math.floor(shipExplodeDuration * fps);
 }
 
 function UPDATE() {
-  let exploding = ship.expoldeTime > 0;
+  let exploding = ship.exploadingTime > 0;
 
   // Draw Space
   ctx.fillStyle = "black";
@@ -315,6 +318,12 @@ function UPDATE() {
     // Motion Ship
     ship.x = ship.x + ship.forward.x;
     ship.y = ship.y - ship.forward.y;
+  } else {
+    ship.exploadingTime--;
+    if (ship.exploadingTime === 0) {
+      ship = newShip();
+    }
+    console.log(ship.exploadingTime);
   }
 
   // Edge of screen
