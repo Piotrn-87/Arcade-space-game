@@ -184,8 +184,8 @@ function UPDATE() {
       ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) - 0.7 * Math.cos(ship.a))
     );
     ctx.lineTo(
-      ship.x - ((ship.r * 6) / 3) * Math.cos(ship.a),
-      ship.y + ((ship.r * 6) / 3) * Math.sin(ship.a)
+      ship.x - ship.r * 2 * Math.cos(ship.a),
+      ship.y + ship.r * 2 * Math.sin(ship.a)
     );
     ctx.lineTo(
       ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) - 0.7 * Math.sin(ship.a)),
@@ -194,6 +194,8 @@ function UPDATE() {
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
+
+    // Move return in space
   } else if (ship.moveReturn) {
     ship.forward.y -= (shipForward * Math.sin(ship.a)) / 20;
     ship.forward.x -= (shipForward * Math.cos(ship.a)) / 20;
