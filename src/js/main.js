@@ -27,7 +27,7 @@ const asteroidSize = 100;
 const asteroidSpeed = 50;
 const asteroidVert = 10;
 const asteroidJaggedness = 0.5;
-const shipExplodeDuration = 30;
+const shipExplodeDuration = 1;
 
 let pause = false;
 let canvas = document.getElementById("gameCanvas");
