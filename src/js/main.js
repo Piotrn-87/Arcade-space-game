@@ -15,26 +15,26 @@ if ("serviceWorker" in navigator) {
     );
   });
 }
-
 console.log(`it works`);
 
 const fps = 30;
 const shipSize = 30;
 const turnSpeed = 270;
 const shipForward = 5;
-const asteroidNumber = 10;
+const asteroidNumber = 30;
 const asteroidSize = 100;
 const asteroidSpeed = 50;
 const asteroidVert = 10;
 const asteroidJaggedness = 0.5;
 const shipExplodeDuration = 1;
+const blink = 0.1;
+const invisibility = 3;
 
 let pause = false;
 let canvas = document.getElementById("gameCanvas");
 let ctx = canvas.getContext("2d");
 let hue = 0;
 let asteroids = [];
-let bounding = false;
 let ship = newShip();
 
 function START() {
@@ -110,6 +110,8 @@ function newShip() {
     retu: Math.floor(Math.random() * -1 * canvas.height),
     r: shipSize / 2,
     a: Math.PI / 2,
+    blinkNum: 30,
+    blinkTime: 3,
     rotate: 0,
     moveForward: false,
     moveReturn: false,
@@ -153,32 +155,41 @@ function explodeShip() {
 }
 
 function UPDATE() {
+  let blinkingOn = ship.blinkNum % 3 === 0;
   let exploding = ship.exploadingTime > 0;
 
   // Draw Space
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-
   // Draw the ship
-
   if (!exploding) {
-    ctx.strokeStyle = "white";
-    ctx.lineWidth = shipSize / 15;
-    ctx.beginPath();
-    ctx.moveTo(
-      ship.x + (4 / 3) * ship.r * Math.cos(ship.a),
-      ship.y - (4 / 3) * ship.r * Math.sin(ship.a)
-    );
-    ctx.lineTo(
-      ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) + Math.sin(ship.a)),
-      ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) - Math.cos(ship.a))
-    );
-    ctx.lineTo(
-      ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) - Math.sin(ship.a)),
-      ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) + Math.cos(ship.a))
-    );
-    ctx.closePath();
-    ctx.stroke();
+    if (blinkingOn) {
+      ctx.strokeStyle = "white";
+      ctx.lineWidth = shipSize / 15;
+      ctx.beginPath();
+      ctx.moveTo(
+        ship.x + (4 / 3) * ship.r * Math.cos(ship.a),
+        ship.y - (4 / 3) * ship.r * Math.sin(ship.a)
+      );
+      ctx.lineTo(
+        ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) + Math.sin(ship.a)),
+        ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) - Math.cos(ship.a))
+      );
+      ctx.lineTo(
+        ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) - Math.sin(ship.a)),
+        ship.y + ship.r * ((2 / 3) * Math.sin(ship.a) + Math.cos(ship.a))
+      );
+      ctx.closePath();
+      ctx.stroke();
+    }
+    // BlinkingOn
+    if (ship.blinkNum > 0) {
+      ship.blinkTime--;
+      if (ship.blinkTime === 0) {
+        ship.blinkTime = Math.floor(blink * fps);
+        ship.blinkNum--;
+      }
+    }
   } else {
     ctx.fillStyle = "darkred";
     ctx.beginPath();
@@ -200,13 +211,6 @@ function UPDATE() {
     ctx.beginPath();
     ctx.arc(ship.x, ship.y, ship.r * 0.5, Math.PI * 2, false);
     ctx.fill();
-  }
-
-  if (bounding) {
-    ctx.strokeStyle = "red";
-    ctx.beginPath();
-    ctx.arc(ship.x, ship.y, ship.r, Math.PI * 2, false);
-    ctx.stroke();
   }
 
   // Move forward in space
@@ -293,25 +297,20 @@ function UPDATE() {
     }
     ctx.closePath();
     ctx.stroke();
-
-    if (bounding) {
-      ctx.strokeStyle = "red";
-      ctx.beginPath();
-      ctx.arc(x, y, r, Math.PI * 2, false);
-      ctx.stroke();
-    }
   }
   // Check for asteroid collision
   if (!exploding) {
-    for (let i = 0; i < asteroids.length; i++) {
-      if (
-        safetyBuffer(ship.x, ship.y, asteroids[i].x, asteroids[i].y) <=
-        ship.r + asteroids[i].r
-      ) {
-        explodeShip();
-        console.log("boom");
+    if (ship.blinkNum === 0) {
+      for (let i = 0; i < asteroids.length; i++) {
+        if (
+          safetyBuffer(ship.x, ship.y, asteroids[i].x, asteroids[i].y) <=
+          ship.r + asteroids[i].r
+        ) {
+          explodeShip();
+        }
       }
     }
+
     // Rotate Ship
     ship.a = ship.a + ship.rotate;
 
@@ -323,7 +322,6 @@ function UPDATE() {
     if (ship.exploadingTime === 0) {
       ship = newShip();
     }
-    console.log(ship.exploadingTime);
   }
 
   // Edge of screen
