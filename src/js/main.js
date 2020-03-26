@@ -17,18 +17,18 @@ if ("serviceWorker" in navigator) {
 }
 console.log(`it works`);
 
-const fps = 30;
-const shipSize = 30;
-const turnSpeed = 270;
-const shipForward = 5;
-const asteroidNumber = 30;
-const asteroidSize = 100;
-const asteroidSpeed = 50;
-const asteroidVert = 10;
-const asteroidJaggedness = 0.5;
-const shipExplodeDuration = 1;
-const blink = 0.1;
-const invisibility = 3;
+const FPS = 30;
+const SHIPSIZE = 30;
+const TURNSPEED = 270;
+const SHIPFORWARD = 5;
+const ASTEROIDNUMBER = 30;
+const ASTEROIDSIZE = 100;
+const ASTEROIDSPEED = 50;
+const ASTEROIDVERT = 10;
+const ASTEROIDJAGGENDESS = 0.5;
+const SHIPEXPLODEDURATION = 1;
+const BLINK = 0.1;
+const INVISIBILITY = 3;
 
 let pause = false;
 let canvas = document.getElementById("gameCanvas");
@@ -54,13 +54,13 @@ function keyDown(e) {
   hue = hue + 10;
   switch (e.keyCode) {
     case 37:
-      ship.rotate = ((turnSpeed / 180) * Math.PI) / fps;
+      ship.rotate = ((TURNSPEED / 180) * Math.PI) / FPS;
       break;
     case 38:
       ship.moveForward = true;
       break;
     case 39:
-      ship.rotate = ((-turnSpeed / 180) * Math.PI) / fps;
+      ship.rotate = ((-TURNSPEED / 180) * Math.PI) / FPS;
       break;
     case 40:
       ship.moveReturn = true;
@@ -95,11 +95,11 @@ function keyUp(e) {
 function createAsteroids() {
   asteroids = [];
   let x, y;
-  for (let i = 0; i < asteroidNumber; i++) {
+  for (let i = 0; i < ASTEROIDNUMBER; i++) {
     do {
       x = Math.floor(Math.random() * canvas.width);
       y = Math.floor(Math.random() * canvas.height);
-    } while (safetyBuffer(ship.x, ship.y, x, y) < asteroidSize * 2);
+    } while (safetyBuffer(ship.x, ship.y, x, y) < ASTEROIDSIZE * 2);
     asteroids.push(newAsteroid(x, y));
   }
 }
@@ -108,7 +108,7 @@ function newShip() {
     x: Math.floor(Math.random() * canvas.width),
     y: Math.floor(Math.random() * canvas.height),
     retu: Math.floor(Math.random() * -1 * canvas.height),
-    r: shipSize / 2,
+    r: SHIPSIZE / 2,
     a: Math.PI / 2,
     blinkNum: 30,
     blinkTime: 3,
@@ -128,16 +128,16 @@ function newAsteroid(x, y) {
   let asteroid = {
     x: x,
     y: y,
-    vertically: Math.random() * 10 + asteroidVert / 2,
-    xv: (Math.random() * asteroidSpeed) / fps < 0.5 ? 1 : -1,
-    yv: (Math.random() * asteroidSpeed) / fps < 0.5 ? 1 : -1,
-    r: Math.floor((Math.random() * asteroidSize) / 4),
+    vertically: Math.random() * 10 + ASTEROIDVERT / 2,
+    xv: (Math.random() * ASTEROIDSPEED) / FPS < 0.5 ? 1 : -1,
+    yv: (Math.random() * ASTEROIDSPEED) / FPS < 0.5 ? 1 : -1,
+    r: Math.floor((Math.random() * ASTEROIDSIZE) / 4),
     a: Math.PI * 2,
     jaggedness: []
   };
-  for (let i = 0; i < asteroidVert; i++) {
+  for (let i = 0; i < ASTEROIDVERT; i++) {
     asteroid.jaggedness.push(
-      Math.random() * asteroidJaggedness * 2 + 1 - asteroidJaggedness
+      Math.random() * ASTEROIDJAGGENDESS * 2 + 1 - ASTEROIDJAGGENDESS
     );
   }
   return asteroid;
@@ -151,7 +151,7 @@ function safetyBuffer(x1, y1, x2, y2) {
 }
 
 function explodeShip() {
-  ship.exploadingTime = Math.floor(shipExplodeDuration * fps);
+  ship.exploadingTime = Math.floor(SHIPEXPLODEDURATION * FPS);
 }
 
 function UPDATE() {
@@ -165,7 +165,7 @@ function UPDATE() {
   if (!exploding) {
     if (blinkingOn) {
       ctx.strokeStyle = "white";
-      ctx.lineWidth = shipSize / 15;
+      ctx.lineWidth = SHIPSIZE / 15;
       ctx.beginPath();
       ctx.moveTo(
         ship.x + (4 / 3) * ship.r * Math.cos(ship.a),
@@ -182,15 +182,19 @@ function UPDATE() {
       ctx.closePath();
       ctx.stroke();
     }
+
     // BlinkingOn
     if (ship.blinkNum > 0) {
       ship.blinkTime--;
       if (ship.blinkTime === 0) {
-        ship.blinkTime = Math.floor(blink * fps);
+        ship.blinkTime = Math.floor(BLINK * FPS);
         ship.blinkNum--;
       }
     }
-  } else {
+  }
+
+  // Explode
+  else {
     ctx.fillStyle = "darkred";
     ctx.beginPath();
     ctx.arc(ship.x, ship.y, ship.r * 1, 7, Math.PI * 2, false);
@@ -215,14 +219,14 @@ function UPDATE() {
 
   // Move forward in space
   if (ship.moveForward) {
-    ship.forward.x += (shipForward * Math.cos(ship.a)) / 10;
-    ship.forward.y += (shipForward * Math.sin(ship.a)) / 10;
+    ship.forward.x += (SHIPFORWARD * Math.cos(ship.a)) / 10;
+    ship.forward.y += (SHIPFORWARD * Math.sin(ship.a)) / 10;
 
     // Draw Turbo Buster
     if (!exploding) {
       ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
       ctx.strokeStyle = "yellow";
-      ctx.lineWidth = shipSize / 15;
+      ctx.lineWidth = SHIPSIZE / 15;
       ctx.beginPath();
       ctx.moveTo(
         ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) + 0.7 * Math.sin(ship.a)),
@@ -243,14 +247,14 @@ function UPDATE() {
 
     // Move return in space
   } else if (ship.moveReturn) {
-    ship.forward.y -= (shipForward * Math.sin(ship.a)) / 20;
-    ship.forward.x -= (shipForward * Math.cos(ship.a)) / 20;
+    ship.forward.y -= (SHIPFORWARD * Math.sin(ship.a)) / 20;
+    ship.forward.x -= (SHIPFORWARD * Math.cos(ship.a)) / 20;
 
     // Draw buster in return
     if (!exploding) {
       ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
       ctx.strokeStyle = "yellow";
-      ctx.lineWidth = shipSize / 15;
+      ctx.lineWidth = SHIPSIZE / 15;
       ctx.beginPath();
       ctx.moveTo(
         ship.x - ship.r * ((2 / 3) * Math.cos(ship.a) + 0.7 * Math.sin(ship.a)),
@@ -277,7 +281,7 @@ function UPDATE() {
   let x, y, r, a, vert, jaggedness;
   for (let i = 0; i < asteroids.length; i++) {
     ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
-    ctx.lineWidth = shipSize / 20;
+    ctx.lineWidth = SHIPSIZE / 20;
     x = asteroids[i].x;
     y = asteroids[i].y;
     a = asteroids[i].a;
@@ -320,7 +324,7 @@ function UPDATE() {
   } else {
     ship.exploadingTime--;
     if (ship.exploadingTime === 0) {
-      ship = newShip();
+      // ship = newShip();
     }
   }
 
