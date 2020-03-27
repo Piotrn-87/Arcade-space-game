@@ -107,7 +107,6 @@ function newShip() {
   return {
     x: Math.floor(Math.random() * canvas.width),
     y: Math.floor(Math.random() * canvas.height),
-    retu: Math.floor(Math.random() * -1 * canvas.height),
     r: SHIPSIZE / 2,
     a: Math.PI / 2,
     blinkNum: 30,
@@ -155,12 +154,13 @@ function explodeShip() {
 }
 
 function UPDATE() {
-  let blinkingOn = ship.blinkNum % 3 === 0;
+  let blinkingOn = ship.blinkNum % INVISIBILITY === 0;
   let exploding = ship.exploadingTime > 0;
 
   // Draw Space
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+
   // Draw the ship
   if (!exploding) {
     if (blinkingOn) {
@@ -195,7 +195,6 @@ function UPDATE() {
 
   // Explode
   else {
-    ctx.fillStyle = "darkred";
     ctx.beginPath();
     ctx.arc(ship.x, ship.y, ship.r * 1, 7, Math.PI * 2, false);
     ctx.fill();
@@ -302,7 +301,8 @@ function UPDATE() {
     ctx.closePath();
     ctx.stroke();
   }
-  // Check for asteroid collision
+
+  // Check for collision
   if (!exploding) {
     if (ship.blinkNum === 0) {
       for (let i = 0; i < asteroids.length; i++) {
@@ -324,7 +324,7 @@ function UPDATE() {
   } else {
     ship.exploadingTime--;
     if (ship.exploadingTime === 0) {
-      // ship = newShip();
+      ship = newShip();
     }
   }
 
