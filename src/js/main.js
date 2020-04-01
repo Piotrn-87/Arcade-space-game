@@ -168,8 +168,8 @@ function shootLaser() {
     ship.lasers.push({
       x: ship.x + (4 / 3) * ship.r * Math.cos(ship.a),
       y: ship.y - (4 / 3) * ship.r * Math.sin(ship.a),
-      xv: (LASER_SPEED * Math.cos(ship.a)) / FPS,
-      yv: -(LASER_SPEED * Math.sin(ship.a)) / FPS
+      xv: (LASER_SPEED * Math.cos(ship.a)) / 50,
+      yv: -(LASER_SPEED * Math.sin(ship.a)) / 50
     });
   }
   ship.canShoot = false;
@@ -312,10 +312,19 @@ function UPDATE() {
     );
     ctx.fill();
   }
-  console.log("length", ship.lasers.length);
   for (let i = 0; i < ship.lasers.length; i++) {
     ship.lasers[i].x += ship.lasers[i].xv;
     ship.lasers[i].y += ship.lasers[i].yv;
+    if (ship.lasers[i].x < 0) {
+      ship.lasers[i].x = canvas.width;
+    } else if (ship.lasers[i].x > canvas.width) {
+      ship.lasers[i].x = 0;
+    }
+    if (ship.lasers[i].y < 0) {
+      ship.lasers[i].y = canvas.height;
+    } else if (ship.lasers[i].y > canvas.height) {
+      ship.lasers[i].y = 0;
+    }
   }
 
   // Draw asteriods
