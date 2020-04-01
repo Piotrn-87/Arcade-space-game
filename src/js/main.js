@@ -25,7 +25,7 @@ const ASTEROIDJAGGENDESS = 0.5;
 const BLINK = 0.1;
 const FPS = 30;
 const INVISIBILITY = 3;
-const LASER_MAX = 10;
+const LASER_MAX = 100;
 const LASER_SPEED = 500;
 const SHIPSIZE = 30;
 const TURNSPEED = 270;
@@ -300,8 +300,7 @@ function UPDATE() {
 
   // Draw Laser
   for (let i = 0; i < ship.lasers.length; i++) {
-    console.log("BANG, BANG");
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "magenta";
     ctx.beginPath();
     ctx.arc(
       ship.lasers[i].x,
@@ -312,6 +311,11 @@ function UPDATE() {
       false
     );
     ctx.fill();
+  }
+  console.log("length", ship.lasers.length);
+  for (let i = 0; i < ship.lasers.length; i++) {
+    ship.lasers[i].x += ship.lasers[i].xv;
+    ship.lasers[i].y += ship.lasers[i].yv;
   }
 
   // Draw asteriods
