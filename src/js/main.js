@@ -17,18 +17,20 @@ if ("serviceWorker" in navigator) {
 }
 console.log(`it works`);
 
-const FPS = 30;
-const SHIPSIZE = 30;
-const TURNSPEED = 270;
-const SHIPFORWARD = 5;
-const ASTEROIDNUMBER = 30;
+const ASTEROIDNUMBER = 10;
 const ASTEROIDSIZE = 100;
 const ASTEROIDSPEED = 50;
 const ASTEROIDVERT = 10;
 const ASTEROIDJAGGENDESS = 0.5;
-const SHIPEXPLODEDURATION = 1;
 const BLINK = 0.1;
+const FPS = 30;
 const INVISIBILITY = 3;
+const LASER_MAX = 10;
+const LASER_SPEED = 500;
+const SHIPSIZE = 30;
+const TURNSPEED = 270;
+const SHIPFORWARD = 5;
+const SHIPEXPLODEDURATION = 1;
 
 let pause = false;
 let canvas = document.getElementById("gameCanvas");
@@ -53,6 +55,9 @@ document.addEventListener("keyup", keyUp);
 function keyDown(e) {
   hue = hue + 10;
   switch (e.keyCode) {
+    case 32:
+      shootLaser();
+      break;
     case 37:
       ship.rotate = ((TURNSPEED / 180) * Math.PI) / FPS;
       break;
@@ -75,6 +80,9 @@ function keyDown(e) {
 
 function keyUp(e) {
   switch (e.keyCode) {
+    case 32:
+      ship.canShoot = true;
+      break;
     case 37:
       ship.rotate = 0;
       break;
@@ -111,15 +119,17 @@ function newShip() {
     a: Math.PI / 2,
     blinkNum: 30,
     blinkTime: 3,
-    rotate: 0,
-    moveForward: false,
-    moveReturn: false,
-    motion: 0.7,
+    canShoot: true,
     exploadingTime: 0,
     forward: {
       x: 0,
       y: 0
-    }
+    },
+    lasers: [],
+    moveForward: false,
+    moveReturn: false,
+    motion: 0.7,
+    rotate: 0
   };
 }
 
@@ -153,6 +163,18 @@ function explodeShip() {
   ship.exploadingTime = Math.floor(SHIPEXPLODEDURATION * FPS);
 }
 
+function shootLaser() {
+  if (ship.canShoot && ship.lasers.length < LASER_MAX) {
+    ship.lasers.push({
+      x: ship.x + (4 / 3) * ship.r * Math.cos(ship.a),
+      y: ship.y - (4 / 3) * ship.r * Math.sin(ship.a),
+      xv: (LASER_SPEED * Math.cos(ship.a)) / FPS,
+      yv: -(LASER_SPEED * Math.sin(ship.a)) / FPS
+    });
+  }
+  ship.canShoot = false;
+}
+
 function UPDATE() {
   let blinkingOn = ship.blinkNum % INVISIBILITY === 0;
   let exploding = ship.exploadingTime > 0;
@@ -183,7 +205,7 @@ function UPDATE() {
       ctx.stroke();
     }
 
-    // BlinkingOn
+    // Blinking On
     if (ship.blinkNum > 0) {
       ship.blinkTime--;
       if (ship.blinkTime === 0) {
@@ -193,7 +215,7 @@ function UPDATE() {
     }
   }
 
-  // Explode
+  // Explode ship
   else {
     ctx.beginPath();
     ctx.arc(ship.x, ship.y, ship.r * 1, 7, Math.PI * 2, false);
@@ -222,7 +244,7 @@ function UPDATE() {
     ship.forward.y += (SHIPFORWARD * Math.sin(ship.a)) / 10;
 
     // Draw Turbo Buster
-    if (!exploding) {
+    if (!exploding && blinkingOn) {
       ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
       ctx.strokeStyle = "yellow";
       ctx.lineWidth = SHIPSIZE / 15;
@@ -245,7 +267,7 @@ function UPDATE() {
     }
 
     // Move return in space
-  } else if (ship.moveReturn) {
+  } else if (ship.moveReturn && blinkingOn) {
     ship.forward.y -= (SHIPFORWARD * Math.sin(ship.a)) / 20;
     ship.forward.x -= (SHIPFORWARD * Math.cos(ship.a)) / 20;
 
@@ -274,6 +296,22 @@ function UPDATE() {
   } else {
     ship.forward.x -= (ship.motion * ship.forward.x) / 5;
     ship.forward.y -= (ship.motion * ship.forward.y) / 5;
+  }
+
+  // Draw Laser
+  for (let i = 0; i < ship.lasers.length; i++) {
+    console.log("BANG, BANG");
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(
+      ship.lasers[i].x,
+      ship.lasers[i].y,
+      SHIPSIZE / 10,
+      0,
+      Math.PI * 2,
+      false
+    );
+    ctx.fill();
   }
 
   // Draw asteriods
@@ -358,3 +396,8 @@ function UPDATE() {
     }
   }
 }
+
+// function handleKey(event) {
+//   console.log(event.keyCode);
+// }
+// window.addEventListener("keydown", handleKey);
