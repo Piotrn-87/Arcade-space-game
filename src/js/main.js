@@ -305,26 +305,26 @@ function UPDATE() {
     ctx.arc(
       ship.lasers[i].x,
       ship.lasers[i].y,
-      SHIPSIZE / 10,
-      0,
+      SHIPSIZE / 2,
       Math.PI * 2,
-      false
+      0,
+      true
     );
     ctx.fill();
   }
   for (let i = 0; i < ship.lasers.length; i++) {
-    ship.lasers[i].x += ship.lasers[i].xv;
-    ship.lasers[i].y += ship.lasers[i].yv;
-    if (ship.lasers[i].x < 0) {
-      ship.lasers[i].x = canvas.width;
-    } else if (ship.lasers[i].x > canvas.width) {
-      ship.lasers[i].x = 0;
-    }
-    if (ship.lasers[i].y < 0) {
-      ship.lasers[i].y = canvas.height;
-    } else if (ship.lasers[i].y > canvas.height) {
-      ship.lasers[i].y = 0;
-    }
+    ship.lasers[i].x += ship.lasers[i].xv * 2;
+    ship.lasers[i].y += ship.lasers[i].yv / 20;
+    // if (ship.lasers[i].x < 0) {
+    //   ship.lasers[i].x = canvas.width;
+    // } else if (ship.lasers[i].x > canvas.width) {
+    //   ship.lasers[i].x = 0;
+    // }
+    // if (ship.lasers[i].y < 0) {
+    //   ship.lasers[i].y = canvas.height;
+    // } else if (ship.lasers[i].y > canvas.height) {
+    //   ship.lasers[i].y = 0;
+    // }
   }
 
   // Draw asteriods
