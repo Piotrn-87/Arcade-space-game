@@ -313,8 +313,8 @@ function UPDATE() {
     ctx.fill();
   }
   for (let i = 0; i < ship.lasers.length; i++) {
-    ship.lasers[i].x += ship.lasers[i].xv * 2;
-    ship.lasers[i].y += ship.lasers[i].yv / 20;
+    ship.lasers[i].x += ship.lasers[i].xv;
+    ship.lasers[i].y += ship.lasers[i].yv;
     // if (ship.lasers[i].x < 0) {
     //   ship.lasers[i].x = canvas.width;
     // } else if (ship.lasers[i].x > canvas.width) {
@@ -325,6 +325,14 @@ function UPDATE() {
     // } else if (ship.lasers[i].y > canvas.height) {
     //   ship.lasers[i].y = 0;
     // }
+  }
+
+  // Detect laser hits on asteroids
+  let asteroid_x, asteroid_y, asteroid_r, laser_x, laser_y;
+  for (let i = asteroids.length - 1; i >= 0; i--) {
+    asteroid_x = asteroids[i].x;
+    asteroid_y = asteroids[i].y;
+    asteroid_r = asteroids[i].r;
   }
 
   // Draw asteriods
