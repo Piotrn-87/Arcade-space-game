@@ -333,6 +333,11 @@ function UPDATE() {
     asteroid_x = asteroids[i].x;
     asteroid_y = asteroids[i].y;
     asteroid_r = asteroids[i].r;
+
+    for (let j = ship.lasers.length - 1; j >= 0; j--) {
+      laser_x = ship.lasers[j].x;
+      laser_y = ship.lasers[j].y;
+    }
   }
 
   // Draw asteriods
