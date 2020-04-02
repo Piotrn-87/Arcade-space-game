@@ -153,10 +153,10 @@ function newAsteroid(x, y) {
 }
 
 function safetyBuffer(x1, y1, x2, y2) {
-  let distansBetweenShip = Math.sqrt(
+  let distansBetweenPoints = Math.sqrt(
     Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)
   );
-  return distansBetweenShip;
+  return distansBetweenPoints;
 }
 
 function explodeShip() {
@@ -337,6 +337,11 @@ function UPDATE() {
     for (let j = ship.lasers.length - 1; j >= 0; j--) {
       laser_x = ship.lasers[j].x;
       laser_y = ship.lasers[j].y;
+
+      if (safetyBuffer(asteroid_x, asteroid_y, laser_x, laser_y) < asteroid_r) {
+        ship.lasers.splice(j, 1);
+        asteroids.splice(i, 1);
+      }
     }
   }
 
