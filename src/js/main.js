@@ -1,15 +1,16 @@
-"use strict";
+import Paddle from "./paddle";
+("use strict");
 
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function() {
+  window.addEventListener("load", function () {
     navigator.serviceWorker.register("serviceworker.js").then(
-      function(registration) {
+      function (registration) {
         console.log(
           "ServiceWorker registration successful with scope: ",
           registration.scope
         );
       },
-      function(err) {
+      function (err) {
         console.log("ServiceWorker registration failed: ", err);
       }
     );
@@ -123,13 +124,13 @@ function newShip() {
     exploadingTime: 0,
     forward: {
       x: 0,
-      y: 0
+      y: 0,
     },
     lasers: [],
     moveForward: false,
     moveReturn: false,
     motion: 0.7,
-    rotate: 0
+    rotate: 0,
   };
 }
 
@@ -142,7 +143,7 @@ function newAsteroid(x, y) {
     yv: (Math.random() * ASTEROIDSPEED) / FPS < 0.5 ? 1 : -1,
     r: Math.floor((Math.random() * ASTEROIDSIZE) / 4),
     a: Math.PI * 2,
-    jaggedness: []
+    jaggedness: [],
   };
   for (let i = 0; i < ASTEROIDVERT; i++) {
     asteroid.jaggedness.push(
@@ -169,7 +170,7 @@ function shootLaser() {
       x: ship.x + (4 / 3) * ship.r * Math.cos(ship.a),
       y: ship.y - (4 / 3) * ship.r * Math.sin(ship.a),
       xv: (LASER_SPEED * Math.cos(ship.a)) / 50,
-      yv: -(LASER_SPEED * Math.sin(ship.a)) / 50
+      yv: -(LASER_SPEED * Math.sin(ship.a)) / 50,
     });
   }
   ship.canShoot = false;
@@ -341,6 +342,7 @@ function UPDATE() {
       if (safetyBuffer(asteroid_x, asteroid_y, laser_x, laser_y) < asteroid_r) {
         ship.lasers.splice(j, 1);
         asteroids.splice(i, 1);
+        break;
       }
     }
   }
