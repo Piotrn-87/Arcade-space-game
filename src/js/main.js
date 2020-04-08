@@ -19,7 +19,7 @@ if ("serviceWorker" in navigator) {
 console.log(`it works`);
 
 const ASTEROIDNUMBER = 10;
-const ASTEROIDSIZE = 100;
+const ASTEROIDSIZE = 20;
 const ASTEROIDSPEED = 50;
 const ASTEROIDVERT = 10;
 const ASTEROIDJAGGENDESS = 0.5;
@@ -29,9 +29,9 @@ const INVISIBILITY = 3;
 const LASER_MAX = 120;
 const LASER_SPEED = 500;
 const SHIPSIZE = 30;
-const TURNSPEED = 270;
 const SHIPFORWARD = 5;
 const SHIPEXPLODEDURATION = 1;
+const TURNSPEED = 270;
 
 let pause = false;
 let canvas = document.getElementById("gameCanvas");
@@ -138,10 +138,10 @@ function newAsteroid(x, y) {
   let asteroid = {
     x: x,
     y: y,
-    vertically: Math.random() * 10 + ASTEROIDVERT / 2,
+    vertically: Math.random() * 10 + ASTEROIDVERT,
     xv: (Math.random() * ASTEROIDSPEED) / FPS < 0.5 ? 1 : -1,
     yv: (Math.random() * ASTEROIDSPEED) / FPS < 0.5 ? 1 : -1,
-    r: Math.floor((Math.random() * ASTEROIDSIZE) / 4),
+    r: ASTEROIDSIZE,
     a: Math.PI * 2,
     jaggedness: [],
   };
@@ -382,6 +382,7 @@ function UPDATE() {
           ship.r + asteroids[i].r
         ) {
           explodeShip();
+          asteroids.splice(i, 5);
         }
       }
     }
