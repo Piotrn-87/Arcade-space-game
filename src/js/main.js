@@ -382,7 +382,7 @@ function UPDATE() {
           ship.r + asteroids[i].r
         ) {
           explodeShip();
-          asteroids.splice(i, 5);
+          asteroids.splice(i, 1);
         }
       }
     }
