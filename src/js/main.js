@@ -18,7 +18,7 @@ if ("serviceWorker" in navigator) {
 console.log(`it works`);
 
 const ASTEROIDNUMBER = 10;
-const ASTEROIDSIZE = 20;
+const ASTEROIDSIZE = 60;
 const ASTEROIDSPEED = 50;
 const ASTEROIDVERT = 10;
 const ASTEROIDJAGGENDESS = 0.5;
@@ -125,7 +125,7 @@ function newShip() {
 }
 
 function newGame() {
-  level = 10;
+  level = 0;
   ship = newShip();
   newLevel();
 }
@@ -140,12 +140,12 @@ function createAsteroids() {
     do {
       x = Math.floor(Math.random() * canvas.width);
       y = Math.floor(Math.random() * canvas.height);
-    } while (safetyBuffer(ship.x, ship.y, x, y) < ASTEROIDSIZE * 2);
-    asteroids.push(newAsteroid(x, y));
+    } while (safetyBuffer(ship.x, ship.y, x, y) < ASTEROIDSIZE * 2 + ship.r);
+    asteroids.push(newAsteroid(x, y, Math.ceil(ASTEROIDSIZE / 2)));
   }
 }
 
-function newAsteroid(x, y) {
+function newAsteroid(x, y, r) {
   let asteroidLevel = 1 + 0.1 * level;
   let asteroid = {
     x: x,
@@ -157,7 +157,7 @@ function newAsteroid(x, y) {
     yv:
       ((Math.random() * ASTEROIDSPEED * asteroidLevel) / FPS) *
       (Math.random() < 0.5 ? 1 : -1),
-    r: ASTEROIDSIZE,
+    r: r,
     a: Math.PI * 2,
     jaggedness: [],
   };
@@ -169,15 +169,27 @@ function newAsteroid(x, y) {
   return asteroid;
 }
 
+function destroyAsteroid(index) {
+  let x = asteroids[index].x;
+  let y = asteroids[index].y;
+  let r = asteroids[index].r;
+
+  if (r == Math.ceil(ASTEROIDSIZE / 2)) {
+    asteroids.push(newAsteroid(x, y, Math.ceil(ASTEROIDSIZE / 4)));
+    asteroids.push(newAsteroid(x, y, Math.ceil(ASTEROIDSIZE / 4)));
+  }
+  asteroids.splice(index, 1);
+}
+
+function explodeShip() {
+  ship.exploadingTime = Math.floor(SHIPEXPLODEDURATION * FPS);
+}
+
 function safetyBuffer(x1, y1, x2, y2) {
   let distansBetweenPoints = Math.sqrt(
     Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)
   );
   return distansBetweenPoints;
-}
-
-function explodeShip() {
-  ship.exploadingTime = Math.floor(SHIPEXPLODEDURATION * FPS);
 }
 
 function shootLaser() {
@@ -357,7 +369,7 @@ function UPDATE() {
 
       if (safetyBuffer(asteroid_x, asteroid_y, laser_x, laser_y) < asteroid_r) {
         ship.lasers.splice(j, 1);
-        asteroids.splice(i, 1);
+        destroyAsteroid(i, 1);
         break;
       }
     }
@@ -394,11 +406,12 @@ function UPDATE() {
     if (ship.blinkNum === 0) {
       for (let i = 0; i < asteroids.length; i++) {
         if (
-          safetyBuffer(ship.x, ship.y, asteroids[i].x, asteroids[i].y) <=
+          safetyBuffer(ship.x, ship.y, asteroids[i].x, asteroids[i].y) <
           ship.r + asteroids[i].r
         ) {
           explodeShip();
-          asteroids.splice(i, 1);
+          destroyAsteroid(i);
+          break;
         }
       }
     }
