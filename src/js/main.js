@@ -1,4 +1,3 @@
-import Paddle from "./paddle";
 ("use strict");
 
 if ("serviceWorker" in navigator) {
@@ -38,17 +37,19 @@ let canvas = document.getElementById("gameCanvas");
 let ctx = canvas.getContext("2d");
 let hue = 0;
 let asteroids = [];
-let ship = newShip();
+let level;
+let ship;
 
-function START() {
+newGame();
+
+function StartStop() {
   window.setInterval(() => {
     if (!pause) {
       UPDATE();
     }
   }, 30);
 }
-START();
-createAsteroids();
+StartStop();
 
 document.addEventListener("keydown", keyDown);
 document.addEventListener("keyup", keyUp);
@@ -101,17 +102,6 @@ function keyUp(e) {
   }
 }
 
-function createAsteroids() {
-  asteroids = [];
-  let x, y;
-  for (let i = 0; i < ASTEROIDNUMBER; i++) {
-    do {
-      x = Math.floor(Math.random() * canvas.width);
-      y = Math.floor(Math.random() * canvas.height);
-    } while (safetyBuffer(ship.x, ship.y, x, y) < ASTEROIDSIZE * 2);
-    asteroids.push(newAsteroid(x, y));
-  }
-}
 function newShip() {
   return {
     x: Math.floor(Math.random() * canvas.width),
@@ -134,13 +124,39 @@ function newShip() {
   };
 }
 
+function newGame() {
+  level = 10;
+  ship = newShip();
+  newLevel();
+}
+function newLevel() {
+  createAsteroids();
+}
+
+function createAsteroids() {
+  asteroids = [];
+  let x, y;
+  for (let i = 0; i < ASTEROIDNUMBER + level; i++) {
+    do {
+      x = Math.floor(Math.random() * canvas.width);
+      y = Math.floor(Math.random() * canvas.height);
+    } while (safetyBuffer(ship.x, ship.y, x, y) < ASTEROIDSIZE * 2);
+    asteroids.push(newAsteroid(x, y));
+  }
+}
+
 function newAsteroid(x, y) {
+  let asteroidLevel = 1 + 0.1 * level;
   let asteroid = {
     x: x,
     y: y,
-    vertically: Math.random() * 10 + ASTEROIDVERT,
-    xv: (Math.random() * ASTEROIDSPEED) / FPS < 0.5 ? 1 : -1,
-    yv: (Math.random() * ASTEROIDSPEED) / FPS < 0.5 ? 1 : -1,
+    vertically: Math.random() * 2 + ASTEROIDVERT,
+    xv:
+      ((Math.random() * ASTEROIDSPEED * asteroidLevel) / FPS) *
+      (Math.random() < 0.5 ? 1 : -1),
+    yv:
+      ((Math.random() * ASTEROIDSPEED * asteroidLevel) / FPS) *
+      (Math.random() < 0.5 ? 1 : -1),
     r: ASTEROIDSIZE,
     a: Math.PI * 2,
     jaggedness: [],
