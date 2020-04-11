@@ -31,8 +31,8 @@ const SHIPSIZE = 30;
 const SHIPFORWARD = 5;
 const SHIPEXPLODEDURATION = 1;
 const TURNSPEED = 270;
-const TEXT_SIZE = 40;
-const TEXT_FADE_TIME = 2;
+const TEXT_FADE_TIME = 3;
+const TEXT_SIZE = 100;
 
 let asteroids = [];
 let canvas = document.getElementById("gameCanvas");
@@ -366,6 +366,17 @@ function UPDATE() {
     // } else if (ship.lasers[i].y > canvas.height) {
     //   ship.lasers[i].y = 0;
     // }
+  }
+
+  // Draw text
+  if (textAlpha >= 0) {
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "rgba(200, 200, 200, " + textAlpha + ")";
+    // ctx.font = "small-caps" + TEXT_SIZE + "px dejavu sans mono";
+    ctx.font = "normal 32px algerian ";
+    ctx.fillText(text, canvas.width / 2, canvas.height * 0.1);
+    textAlpha = textAlpha - 1.0 / TEXT_FADE_TIME / FPS;
   }
 
   // Detect laser hits on asteroids
