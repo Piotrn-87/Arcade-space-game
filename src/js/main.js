@@ -17,8 +17,8 @@ if ("serviceWorker" in navigator) {
 }
 console.log(`it works`);
 
-const ASTEROIDNUMBER = 10;
-const ASTEROIDSIZE = 60;
+const ASTEROIDNUMBER = 2;
+const ASTEROIDSIZE = 50;
 const ASTEROIDSPEED = 50;
 const ASTEROIDVERT = 10;
 const ASTEROIDJAGGENDESS = 0.5;
@@ -31,14 +31,18 @@ const SHIPSIZE = 30;
 const SHIPFORWARD = 5;
 const SHIPEXPLODEDURATION = 1;
 const TURNSPEED = 270;
+const TEXT_SIZE = 40;
+const TEXT_FADE_TIME = 2;
 
-let pause = false;
+let asteroids = [];
 let canvas = document.getElementById("gameCanvas");
 let ctx = canvas.getContext("2d");
 let hue = 0;
-let asteroids = [];
 let level;
+let pause = false;
 let ship;
+let text;
+let textAlpha;
 
 newGame();
 
@@ -127,9 +131,11 @@ function newShip() {
 function newGame() {
   level = 0;
   ship = newShip();
-  newLevel();
+  nextLevel();
 }
-function newLevel() {
+function nextLevel() {
+  text = "Level " + (level + 1);
+  textAlpha = 1.0;
   createAsteroids();
 }
 
@@ -147,6 +153,7 @@ function createAsteroids() {
 
 function newAsteroid(x, y, r) {
   let asteroidLevel = 1 + 0.1 * level;
+  console.log("R", r);
   let asteroid = {
     x: x,
     y: y,
@@ -161,6 +168,7 @@ function newAsteroid(x, y, r) {
     a: Math.PI * 2,
     jaggedness: [],
   };
+
   for (let i = 0; i < ASTEROIDVERT; i++) {
     asteroid.jaggedness.push(
       Math.random() * ASTEROIDJAGGENDESS * 2 + 1 - ASTEROIDJAGGENDESS
@@ -179,6 +187,10 @@ function destroyAsteroid(index) {
     asteroids.push(newAsteroid(x, y, Math.ceil(ASTEROIDSIZE / 4)));
   }
   asteroids.splice(index, 1);
+  if (asteroids.length === 0) {
+    level++;
+    nextLevel();
+  }
 }
 
 function explodeShip() {
