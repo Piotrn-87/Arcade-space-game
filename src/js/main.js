@@ -421,10 +421,10 @@ function UPDATE() {
 
   // Draw Score
   ctx.textAlign = "right";
-  ctx.textBaseline = "middle";
+  ctx.textBaseline = "right";
   ctx.fillStyle = "rgba(200, 200, 200)";
-  ctx.font = "normal 32px arial";
-  ctx.fillText(score, canvas.width - SHIP_SIZE / 2, SHIP_SIZE);
+  ctx.font = "normal 18px arial";
+  ctx.fillText("Score: " + score, canvas.width - SHIP_SIZE, SHIP_SIZE);
 
   // Detect laser hits on asteroids
   let asteroid_x, asteroid_y, asteroid_r, laser_x, laser_y;
