@@ -28,6 +28,8 @@ const GAME_LIVE = 3;
 const INVISIBILITY = 3;
 const LASER_MAX = 120;
 const LASER_SPEED = 500;
+const POINTS_FOR_LARGE_ASTEROID = 10;
+const POINTS_FOR_SMALL_ASTEROID = 20;
 const SHIP_SIZE = 30;
 const SHIP_FORWARD = 5;
 const SHIP_EXPLODEDURATION = 1;
@@ -45,6 +47,7 @@ let pause = false;
 let ship;
 let text;
 let textAlpha;
+let score;
 
 newGame();
 
@@ -116,6 +119,7 @@ function keyUp(e) {
 
 function newGame() {
   level = 0;
+  score = 0;
   lives = GAME_LIVE;
   ship = newShip();
   nextLevel();
@@ -220,8 +224,11 @@ function destroyAsteroid(index) {
   let r = asteroids[index].r;
 
   if (r == Math.ceil(ASTEROID_SIZE / 2)) {
+    score = score + POINTS_FOR_LARGE_ASTEROID;
     asteroids.push(newAsteroid(x, y, Math.ceil(ASTEROID_SIZE / 4)));
     asteroids.push(newAsteroid(x, y, Math.ceil(ASTEROID_SIZE / 4)));
+  } else {
+    score = score + POINTS_FOR_SMALL_ASTEROID;
   }
   asteroids.splice(index, 1);
   if (asteroids.length === 0) {
@@ -411,6 +418,13 @@ function UPDATE() {
       livesColour
     );
   }
+
+  // Draw Score
+  ctx.textAlign = "right";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = "rgba(200, 200, 200)";
+  ctx.font = "normal 32px arial";
+  ctx.fillText(score, canvas.width - SHIP_SIZE / 2, SHIP_SIZE);
 
   // Detect laser hits on asteroids
   let asteroid_x, asteroid_y, asteroid_r, laser_x, laser_y;
