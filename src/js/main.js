@@ -249,7 +249,7 @@ function safetyBuffer(x1, y1, x2, y2) {
 }
 
 function shootLaser() {
-  if (ship.canShoot && ship.lasers.length < LASER_MAX) {
+  if (ship.canShoot) {
     ship.lasers.push({
       x: ship.x + (4 / 3) * ship.r * Math.cos(ship.a),
       y: ship.y - (4 / 3) * ship.r * Math.sin(ship.a),
