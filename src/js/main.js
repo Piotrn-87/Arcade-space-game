@@ -49,6 +49,8 @@ let text;
 let textAlpha;
 let score;
 
+let shoot = new Audio("../assets/sounds/Shoot.wav");
+
 newGame();
 
 function StartStop() {
@@ -256,6 +258,7 @@ function shootLaser() {
       xv: (LASER_SPEED * Math.cos(ship.a)) / 50,
       yv: -(LASER_SPEED * Math.sin(ship.a)) / 50,
     });
+    shoot.play();
   }
   ship.canShoot = false;
 }
