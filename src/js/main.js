@@ -49,7 +49,22 @@ let text;
 let textAlpha;
 let score;
 
-let shoot = new Audio("../assets/sounds/Shoot.wav");
+let shoot = new soundEffect("../assets/sounds/Shoot.wav", 0.6, 10);
+
+function soundEffect(src, soundVolume = 1.0, maxSeries) {
+  this.streamNum = 1;
+  this.streams = [];
+  for (let i = 0; i <= maxSeries; i++) {
+    this.streams.push(new Audio(src));
+    this.streams[i].volume = soundVolume;
+  }
+  this.play = function () {
+    this.streamNum = (this.streamNum + 1) % maxSeries;
+    this.streams[this.streamNum].play();
+    console.log(this.streamNum);
+    // console.log(this.streams);
+  };
+}
 
 newGame();
 
