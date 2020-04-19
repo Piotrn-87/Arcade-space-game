@@ -50,9 +50,10 @@ let textAlpha;
 let score;
 
 let shoot = new soundEffect("../assets/sounds/Shoot.wav", 0.4, 10);
+let crushing = new soundEffect("../assets/sounds/Crushing.wav", 1.0, 5);
+let shipReturn = new soundEffect("../assets/sounds/Return.wav");
 let shipBlowingUp = new soundEffect("../assets/sounds/Ship_Explosion.wav");
 let rocketThruster = new soundEffect("../assets/sounds/Rocket_Thrusters.wav");
-let crushing = new soundEffect("../assets/sounds/Crushing.wav", 1.0, 5);
 
 function soundEffect(src, soundVolume = 1.0, maxSeries = 1) {
   let shootSeries = this.shootSeries;
@@ -338,7 +339,7 @@ function UPDATE() {
   if (ship.moveForward) {
     ship.forward.x += (SHIP_FORWARD * Math.cos(ship.a)) / 10;
     ship.forward.y += (SHIP_FORWARD * Math.sin(ship.a)) / 10;
-    // rocketThruster.play();
+    rocketThruster.play();
 
     // Draw Turbo Buster
     if (!exploding && blinkingOn) {
@@ -367,7 +368,7 @@ function UPDATE() {
   } else if (ship.moveReturn && blinkingOn) {
     ship.forward.y -= (SHIP_FORWARD * Math.sin(ship.a)) / 20;
     ship.forward.x -= (SHIP_FORWARD * Math.cos(ship.a)) / 20;
-    rocketThruster.stop();
+    shipReturn.play();
 
     // Draw buster in return
     if (!exploding) {
@@ -394,6 +395,8 @@ function UPDATE() {
   } else {
     ship.forward.x -= (ship.motion * ship.forward.x) / 5;
     ship.forward.y -= (ship.motion * ship.forward.y) / 5;
+    rocketThruster.stop();
+    shipReturn.stop();
   }
 
   // Draw Laser
