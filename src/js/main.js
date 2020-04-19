@@ -49,20 +49,27 @@ let text;
 let textAlpha;
 let score;
 
-let shoot = new soundEffect("../assets/sounds/Shoot.wav", 0.6, 10);
+let shoot = new soundEffect("../assets/sounds/Shoot.wav", 0.4, 10);
+let shipBlowingUp = new soundEffect("../assets/sounds/Ship_Explosion.wav");
+let rocketThruster = new soundEffect("../assets/sounds/Rocket_Thrusters.wav");
+let crushing = new soundEffect("../assets/sounds/Crushing.wav", 1.0, 5);
 
-function soundEffect(src, soundVolume = 1.0, maxSeries) {
-  this.streamNum = 1;
-  this.streams = [];
+function soundEffect(src, soundVolume = 1.0, maxSeries = 1) {
+  let shootSeries = this.shootSeries;
+  let streams = this.streams;
+  shootSeries = 1;
+  streams = [];
   for (let i = 0; i <= maxSeries; i++) {
-    this.streams.push(new Audio(src));
-    this.streams[i].volume = soundVolume;
+    streams.push(new Audio(src));
+    streams[i].volume = soundVolume;
   }
   this.play = function () {
-    this.streamNum = (this.streamNum + 1) % maxSeries;
-    this.streams[this.streamNum].play();
-    console.log(this.streamNum);
-    // console.log(this.streams);
+    shootSeries = (shootSeries + 1) % maxSeries;
+    streams[shootSeries].play();
+  };
+  this.stop = function () {
+    streams[shootSeries].pause();
+    streams[shootSeries].currentTime = 0;
   };
 }
 
@@ -239,6 +246,7 @@ function destroyAsteroid(index) {
   let x = asteroids[index].x;
   let y = asteroids[index].y;
   let r = asteroids[index].r;
+  crushing.play();
 
   if (r == Math.ceil(ASTEROID_SIZE / 2)) {
     score = score + POINTS_FOR_LARGE_ASTEROID;
@@ -256,6 +264,7 @@ function destroyAsteroid(index) {
 
 function explodeShip() {
   ship.exploadingTime = Math.floor(SHIP_EXPLODEDURATION * FPS);
+  shipBlowingUp.play();
 }
 
 function safetyBuffer(x1, y1, x2, y2) {
@@ -329,6 +338,7 @@ function UPDATE() {
   if (ship.moveForward) {
     ship.forward.x += (SHIP_FORWARD * Math.cos(ship.a)) / 10;
     ship.forward.y += (SHIP_FORWARD * Math.sin(ship.a)) / 10;
+    // rocketThruster.play();
 
     // Draw Turbo Buster
     if (!exploding && blinkingOn) {
@@ -357,6 +367,7 @@ function UPDATE() {
   } else if (ship.moveReturn && blinkingOn) {
     ship.forward.y -= (SHIP_FORWARD * Math.sin(ship.a)) / 20;
     ship.forward.x -= (SHIP_FORWARD * Math.cos(ship.a)) / 20;
+    rocketThruster.stop();
 
     // Draw buster in return
     if (!exploding) {
