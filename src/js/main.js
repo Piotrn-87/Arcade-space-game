@@ -49,11 +49,11 @@ let text;
 let textAlpha;
 let score;
 
-let shoot = new soundEffect("../assets/sounds/Shoot.wav", 0.4, 10);
-let crushing = new soundEffect("../assets/sounds/Crushing.wav", 1.0, 5);
-let shipReturn = new soundEffect("../assets/sounds/Return.wav");
-let shipBlowingUp = new soundEffect("../assets/sounds/Ship_Explosion.wav");
-let rocketThruster = new soundEffect("../assets/sounds/Rocket_Thrusters.wav");
+let shoot = new soundEffect("assets/sounds/Shoot.wav", 0.4, 10);
+let crushing = new soundEffect("assets/sounds/Crushing.wav", 1.0, 5);
+let shipReturn = new soundEffect("assets/sounds/Rocket_Thrusters.wav");
+let shipBlowingUp = new soundEffect("assets/sounds/Ship_Explosion.wav");
+let rocketThruster = new soundEffect("assets/sounds/Return.wav");
 
 function soundEffect(src, soundVolume = 1.0, maxSeries = 1) {
   let shootSeries = this.shootSeries;
