@@ -49,11 +49,12 @@ let text;
 let textAlpha;
 let score;
 
-let shoot = new soundEffect("assets/sounds/Shoot.wav", 0.4, 10);
+let shoot = new soundEffect("assets/sounds/Shoot.wav", 0.4, 15);
 let crushing = new soundEffect("assets/sounds/Crushing.wav", 1.0, 5);
-let shipReturn = new soundEffect("assets/sounds/Rocket_Thrusters.wav");
+let shipReturn = new soundEffect("assets/sounds/Fast.wav", 1.0, 5);
 let shipBlowingUp = new soundEffect("assets/sounds/Ship_Explosion.wav");
-let rocketThruster = new soundEffect("assets/sounds/Return.wav");
+let rocketThruster = new soundEffect("assets/sounds/Rocket_Thrusters.wav");
+let tada = new soundEffect("assets/sounds/Tada.wav", 0.5, 1);
 
 function soundEffect(src, soundVolume = 1.0, maxSeries = 1) {
   let shootSeries = this.shootSeries;
@@ -160,6 +161,7 @@ function nextLevel() {
   text = "Level " + (level + 1);
   textAlpha = 1.0;
   createAsteroids();
+  tada.play();
 }
 
 function drawShip(x, y, a, colour = "white") {
@@ -219,7 +221,6 @@ function createAsteroids() {
 
 function newAsteroid(x, y, r) {
   let asteroidLevel = 1 + 0.1 * level;
-  console.log("R", r);
   let asteroid = {
     x: x,
     y: y,
