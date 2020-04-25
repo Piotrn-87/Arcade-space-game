@@ -1,3 +1,5 @@
+Celem gry jest praktyczna nauka JS
+
 # gulp-starter-asteroids
 
 `npm install -g gulp-cli`
@@ -7,3 +9,4 @@
 `gulp`
 
 To publish your page using github pages use `npm run deploy`
+
