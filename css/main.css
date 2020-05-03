@@ -318,18 +318,31 @@ html {
           box-sizing: inherit; }
 
 body {
-  margin: 0;
-  padding: 0;
-  background: #bada55;
-  display: -ms-grid;
-  display: grid;
-  justify-items: center;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  padding: 2rem;
+  display: -ms-grid;
+  display: grid;
+  height: 100vh;
+  justify-items: center;
+  margin: 0;
   margin: auto;
-  height: 100vh; }
+  padding: 0;
+  padding: 2rem;
+  overflow: hidden; }
+
+.video {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  position: absolute;
+  z-index: -2020; }
 
 @-webkit-keyframes animate {
   0% {
