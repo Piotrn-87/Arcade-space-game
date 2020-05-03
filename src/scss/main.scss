@@ -12,17 +12,23 @@ html {
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  // color: $violet;
-  background: $green;
-  display: grid;
-  justify-items: center;
   align-items: center;
-  padding: 2rem;
-  margin: auto;
+  display: grid;
   height: 100vh;
-  // animation: animate 10s linear infinite;
+  justify-items: center;
+  margin: 0;
+  margin: auto;
+  padding: 0;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.video {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  z-index: -2020;
 }
 
 @keyframes animate {

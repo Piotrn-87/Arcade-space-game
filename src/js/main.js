@@ -166,7 +166,7 @@ function nextLevel() {
 
 function drawShip(x, y, a, colour = "white") {
   ctx.strokeStyle = colour;
-  ctx.lineWidth = SHIP_SIZE / 15;
+  ctx.lineWidth = SHIP_SIZE / FPS;
   ctx.beginPath();
   ctx.moveTo(
     x + (4 / 3) * ship.r * Math.cos(a),
@@ -202,7 +202,7 @@ function newShip() {
     lasers: [],
     moveForward: false,
     moveReturn: false,
-    motion: 0.7,
+    motion: 0.9,
     rotate: 0,
   };
 }
@@ -312,7 +312,6 @@ function UPDATE() {
       }
     }
   }
-
   // Explode ship
   else {
     ctx.beginPath();
@@ -364,11 +363,11 @@ function UPDATE() {
       ctx.fill();
       ctx.stroke();
     }
-
-    // Move return in space
-  } else if (ship.moveReturn && blinkingOn) {
-    ship.forward.y -= (SHIP_FORWARD * Math.sin(ship.a)) / 20;
-    ship.forward.x -= (SHIP_FORWARD * Math.cos(ship.a)) / 20;
+  }
+  // Move return in space
+  else if (ship.moveReturn && blinkingOn) {
+    ship.forward.y -= (SHIP_FORWARD * Math.sin(ship.a)) / 10;
+    ship.forward.x -= (SHIP_FORWARD * Math.cos(ship.a)) / 10;
     shipReturn.play();
 
     // Draw buster in return
@@ -397,7 +396,7 @@ function UPDATE() {
     ship.forward.x -= (ship.motion * ship.forward.x) / 5;
     ship.forward.y -= (ship.motion * ship.forward.y) / 5;
     rocketThruster.stop();
-    shipReturn.stop();
+    // shipReturn.stop();
   }
 
   // Draw Laser
@@ -567,8 +566,3 @@ function UPDATE() {
     }
   }
 }
-
-// function handleKey(event) {
-//   console.log(event.keyCode);
-// }
-// window.addEventListener("keydown", handleKey);
