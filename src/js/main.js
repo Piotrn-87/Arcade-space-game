@@ -49,8 +49,8 @@ let text;
 let textAlpha;
 let score;
 
-let shoot = new soundEffect("assets/sounds/Shoot.wav", 0.4, 15);
 let crushing = new soundEffect("assets/sounds/Crushing.wav", 1.0, 5);
+let shoot = new soundEffect("assets/sounds/Shoot.wav", 0.4, 15);
 let shipReturn = new soundEffect("assets/sounds/Fast.wav", 1.0, 5);
 let shipBlowingUp = new soundEffect("assets/sounds/Ship_Explosion.wav");
 let rocketThruster = new soundEffect("assets/sounds/Rocket_Thrusters.wav");
