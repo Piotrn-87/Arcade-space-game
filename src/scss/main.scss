@@ -13,6 +13,9 @@ html {
 
 body {
   align-items: center;
+  background-image: url(../assets/img/relax.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
   display: grid;
   height: 100vh;
   justify-items: center;
@@ -21,14 +24,7 @@ body {
   padding: 0;
   padding: 1.5rem;
   overflow: hidden;
-}
 
-.video {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  position: absolute;
-  z-index: -2020;
 }
 
 @keyframes animate {
